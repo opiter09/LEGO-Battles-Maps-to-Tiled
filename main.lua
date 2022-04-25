@@ -1,8 +1,20 @@
-local inp = assert(io.open("testD.bin", "rb"))
-local out = assert(io.open("testD.tmx", "w"))
 local bytes = {}
+local out = assert(io.open("testD.tmx", "w"))
+local detailFile = assert(io.open("DetailTiles.bin", "rb"))
+local mapFile = assert(io.open("Map.bin", "rb"))
 
-local bytE = inp:read("*all")
+local tileset = ""
+local stringCheck = mapFile:read("*all")
+print(string.byte(stringCheck, 12))
+if (string.byte(stringCheck, 12) == 75) then --K
+	tileset = "KingTileset"
+elseif (string.byte(stringCheck, 12) == 80) then --P
+	tileset = "PirateTileset"
+elseif (string.byte(stringCheck, 12) == 77) then --M
+	tileset = "MarsTileset"
+end
+
+local bytE = detailFile:read("*all")
 for i = 1, 10000 do
 	if (string.byte(bytE, i) == nil) then
 		break
@@ -40,7 +52,7 @@ for i = 1, 10000 do
 		bytes[#bytes + 1] = tonumber(string.format("%s%s", result2, result), 16) + 1
 	end
 end
-inp:close()
+detailFile:close()
 
 for i = 1, 10000 do
 	if (bytes[i] == nil) then
@@ -51,7 +63,7 @@ end
 out:write(
 	"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n",
 	"<map version=\"1.8\" tiledversion=\"1.8.4\" orientation=\"orthogonal\" renderorder=\"right-down\" width=\"40\" height=\"40\" tilewidth=\"8\" tileheight=\"8\" infinite=\"0\" nextlayerid=\"2\" nextobjectid=\"1\">\n",
-	" <tileset firstgid=\"1\" source=\"kingme.tsj\"/>\n",
+	string.format(" <tileset firstgid=\"1\" source=\"%s.tsj\"/>\n", tileset),
 	" <layer id=\"1\" name=\"Tile Layer 1\" width=\"40\" height=\"40\">\n",
     "  <data encoding=\"csv\">\n")
 out:close()
