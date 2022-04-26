@@ -18,6 +18,8 @@ local bytE = detailFile:read("*all")
 for i = 1, 10000 do
 	if (string.byte(bytE, i) == nil) then
 		break
+	elseif (string.byte(bytE, i + 1) == nil) then
+		break
 	elseif ((i / 2) ~= math.floor(i / 2)) then
 		local num = tonumber(string.byte(bytE, i))
 		local hexstr = "0123456789ABCDEF"
